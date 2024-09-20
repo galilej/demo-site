@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Sheets CRUD</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <h1>Google Sheets CRUD Aplikacija</h1>
+    
+    <!-- Forma za unos podataka -->
+    <form id="dataForm">
+        <label for="name">Ime:</label>
+        <input type="text" id="name" placeholder="Ime" required><br><br>
+        
+        <label for="age">Godine:</label>
+        <input type="text" id="age" placeholder="Godine" required><br><br>
+        
+        <label for="email">Email:</label>
+        <input type="email" id="email" placeholder="Email" required><br><br>
+        
+        <button type="submit">Dodaj</button>
+    </form>
+    
+    <div id="response"></div>
+
+    <!-- jQuery kod -->
+    <script>
+        $(document).ready(function() {
+            $('#dataForm').on('submit', function(event) {
+                event.preventDefault(); // Sprečava ponovno učitavanje stranice
+
+                var name = $('#name').val();
+                var age = $('#age').val();
+                var email = $('#email').val();
+
+                // Provera da li su svi podaci uneti
+                if (!name || !age || !email) {
+                    $('#response').html("Molimo unesite sve podatke.");
+                    return;
+                }
+
+                $.ajax({
+                    url: "https://script.googleusercontent.com/macros/echo?user_content_key=rtJRh4t9TII-bZ15z76qVktYd-7N5rpqbK8G7N1G54k2dmD_2NYaO65RgwD6kaAfV6W9elNgZ1WxVoZ0i7ROJ3LtfSy9hvWjm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnMVtdjjRNfDIU0-haXrflrC4azDtoM1t6Z6bGTiUtwx5M8amQKidWod5sQxKxvfjpL1diw3Xo3Mp-KwG8dZFpA15aekP_dV6mw&lib=MI6WpaXvyv2PlhN4Mw3ICvHzt3BApglEU", // Zameni sa URL-om tvoje aplikacije
+                    method: "POST",
+                    data: {
+                        action: "add",
+                        name: name,
+                        age: age,
+                        email: email
+                    },
+                    success: function(response) {
+                        console.log("Odgovor: ", response); // Ispis odgovora u konzolu
+                        $('#response').html(response); // Prikazuje odgovor iz Apps Script-a
+                        // Očisti formu nakon dodavanja podataka
+                        $('#dataForm')[0].reset();
+                    },
+                    error: function(error) {
+                        console.error("Greška: ", error); // Ispis greške u konzolu
+                        $('#response').html("Došlo je do greške pri slanju podataka.");
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
